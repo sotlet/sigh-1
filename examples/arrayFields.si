@@ -1,0 +1,11 @@
+var x: Int [3][4]
+print("x.nDim = " + x.nDim)//3
+print("x.count = " + x.count)//12
+print("x.sum = " + x.sum)//0
+print("x.avg = " + x.avg)//0
+x[0][0] = 30
+x[1][1] = 21
+x[2][2] = 78
+x[2][3] = 45
+print("x.sum = " + x.sum)//129
+print("x.avg = " + x.avg)//10
