@@ -282,6 +282,11 @@ public final class Interpreter
                                 throw new ArithmeticException("Division by zero");
                             result[i] = (double) leftArray[i] / (double) rightArray[i];
                             break;
+                        case 4:
+                            if((double) rightArray[i]==0)
+                                throw new ArithmeticException("Division by zero");
+                            result[i] = (double) leftArray[i] % (double) rightArray[i];
+                            break;
                         default:
                             result[i] = null;
                             break;
@@ -311,6 +316,11 @@ public final class Interpreter
                             if ((long) rightArray[i] == 0)
                                 throw new ArithmeticException("Division by zero");
                             result[i] = (long) leftArray[i] / (long) rightArray[i];
+                            break;
+                        case 4:
+                            if ((long) rightArray[i] == 0)
+                                throw new ArithmeticException("Division by zero");
+                            result[i] = (long) leftArray[i] % (long) rightArray[i];
                             break;
                         default:
                             result[i] = null;
@@ -369,7 +379,7 @@ public final class Interpreter
             return result;
         }
         else{
-            throw new InterpreterException("Operation not implemented",new Exception());
+            throw new InterpreterException("Operation not possible on arrays",new Exception());
         }
         return null;
     }
@@ -479,29 +489,29 @@ public final class Interpreter
         Object left  = get(node.left);
         Object right = get(node.right);
 
-        if(node.operator == BinaryOperator.ADD){
-            return arrayOperate(left,right,0);
-        }
-        else if (node.operator==BinaryOperator.MULTIPLY){
-            return arrayOperate(left,right,2);
-        }
-        else if (node.operator==BinaryOperator.SUBTRACT){
-            return arrayOperate(left,right,1);
-        }
-        else if (node.operator==BinaryOperator.DIVIDE){
-            return arrayOperate(left,right,3);
-        }
-        else if (node.operator==BinaryOperator.DOTPRODUCT){
-            return matrixOperate(left,right,0);
-        }
         switch (node.operator) {
+            case  ADD:
+                return arrayOperate(left,right,0);
+            case MULTIPLY:
+                return arrayOperate(left,right,2);
+            case SUBTRACT:
+                return arrayOperate(left,right,1);
+            case DIVIDE:
+                return arrayOperate(left,right,3);
+            case DOTPRODUCT:
+                return matrixOperate(left,right,0);
+            case REMAINDER:
+                return arrayOperate(left,right,4);
+
             case EQUALITY:
                 return  leftType.isPrimitive() ? left.equals(right) : left == right;
             case NOT_EQUALS:
                 return  leftType.isPrimitive() ? !left.equals(right) : left != right;
+
         }
 
-        throw new InterpreterException("Operation not implemented yet", new Exception());
+
+        throw new InterpreterException("Operation not possible on arrays", new Exception());
     }
 
     private Object binaryExpression (BinaryExpressionNode node)

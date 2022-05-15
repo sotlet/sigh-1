@@ -542,6 +542,8 @@ public final class InterpreterTests extends TestFixture {
         checkExpr("([4, 2]-[1, 1])[1]", 1L );
         checkExpr("([4, 2]/[1, 1])[0]", 4L );
         checkExpr("([3, 2]/[2, 1])[0]", 1L );
+        checkExpr("([4, 2]%[3, 3])[0]", 1L );
+        checkExpr("([4, 2]%[3, 3])[1]", 2L );
         checkExpr("([3.0, 2.0]/[2.0, 1.0])[0]", 1.5d );
 
         checkExpr("[[1, 2, 3], [4, 5, 6]][0][1]", 2L);

@@ -20,7 +20,7 @@ public final class Test
 //         String file = "fizzbuzz.si";
 //         String file = "test.si";
 //        String file = "kitchensink.si";
-        String file = "arrayOperations.si";
+        String file = "arrayFields.si";
         String path = Paths.get("examples/", file).toAbsolutePath().toString();
         String src = IO.slurp(path);
         SighGrammar grammar = new SighGrammar();
