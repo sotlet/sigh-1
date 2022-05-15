@@ -353,6 +353,7 @@ public final class Interpreter
                     case 1: decl = "minus"; break;
                     case 2: decl = "mul"; break;
                     case 3: decl = "div"; break;
+                    case 4: decl = "modulo"; break;
 
                 }
                 FunDeclarationNode b1 = (FunDeclarationNode) ((HashMap)leftArray[i]).get(decl);
@@ -872,7 +873,7 @@ public final class Interpreter
                 for (int i = 0; i <((Object[])arg).length;i++){
                     FunDeclarationNode toprint = (FunDeclarationNode) ((HashMap)((Object[])arg)[i]).get("to_Number");
                     if(toprint==null){
-                        throw new InterpreterException("You must implement to_Number method",new Exception());
+                        throw new InterpreterException("You must implement to_Number method",new NoSuchMethodException());
                     }
 
                     ScopeStorage oldStorage = storage;

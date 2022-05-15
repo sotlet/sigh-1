@@ -480,6 +480,32 @@ public final class InterpreterTests extends TestFixture {
 
                 "return z[0].num",
             8L);
+
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                " fun modulo(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num%x.den,den%x.num);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(3, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x%y; " +
+                "return z[0].num",
+            1L);
          checkThrows(
 
                     "class Fraction { var num: Int; var den: Int " +
