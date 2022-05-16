@@ -318,6 +318,46 @@ public final class InterpreterTests extends TestFixture {
         checkThrows("return (2/[1,2,3])[2]",InterpreterException.class);
         checkThrows("return (2/[[1],[2],[3]])[0][0]",InterpreterException.class);
         checkThrows("return (2/[[1],[2],[3]])[1][0]",InterpreterException.class);
+        check("return ([1,2,3]%2)[0]",1L);
+        check("return ([1,2,3]%2)[1]",0L);
+        check("return ([1,2,3]%2)[2]",1L);
+        check("return ([[1],[2],[3]]%2)[0][0]",1L);
+        check("return ([[1],[2],[3]]%2)[1][0]",0L);
+        checkThrows("return (2%[1,2,3])[0]",InterpreterException.class);
+        checkThrows("return (2%[1,2,3])[1]",InterpreterException.class);
+        checkThrows("return (2%[1,2,3])[2]",InterpreterException.class);
+        checkThrows("return (2%[[1],[2],[3]])[0][0]",InterpreterException.class);
+        checkThrows("return (2%[[1],[2],[3]])[1][0]",InterpreterException.class);
+
+        check("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=x%y;" +
+            "return z[1][0]", 2L);
+        check("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=x+y;" +
+            "return z[1][0]", 37L);
+        check("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=x-y;" +
+            "return z[1][0]", 27L);
+        check("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=x*y;" +
+            "return z[1][0]", 160L);
+        check("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=x/y;" +
+            "return z[1][0]", 6L);
+        checkThrows("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=y/x;" +
+            "return z[1][0]", InterpreterException.class);
+        checkThrows("var x: Int[2][1]; var y: Int=5;" +
+            "x[0][0]=51;x[1][0]=32;" +
+            "var z:Int[][]=y%x;" +
+            "return z[1][0]", InterpreterException.class);
+
     }
 
     @Test public void testClassDeclaration(){
@@ -598,6 +638,8 @@ public final class InterpreterTests extends TestFixture {
                 "return x[1].num;",AssertionError.class);
 
     }
+
+
     @Test
     public void testArrayStructAccess () {
         checkExpr("[1][0]", 1L);
@@ -641,6 +683,8 @@ public final class InterpreterTests extends TestFixture {
         checkExpr("([4, 2]%[3, 3])[0]", 1L );
         checkExpr("([4, 2]%[3, 3])[1]", 2L );
         checkExpr("([3.0, 2.0]/[2.0, 1.0])[0]", 1.5d );
+
+        checkThrows("return ([4, 2]/[0, 1])[1]", InterpreterException.class );
 
         checkExpr("[[1, 2, 3], [4, 5, 6]][0][1]", 2L);
 
@@ -783,6 +827,16 @@ public final class InterpreterTests extends TestFixture {
             "y[0][0]=4;y[1][0]=5;" +
             "var z:Int[][]=x-y;" +
             "return z[0][0]", -3L);
+        check("var x: Int[2][1]; var y: Int[2][1];" +
+            "x[0][0]=1;x[1][0]=1;" +
+            "y[0][0]=4;y[1][0]=5;" +
+            "var z:Int[][]=x/y;" +
+            "return z[0][0]", 0L);
+        checkThrows("var x: Int[2][1]; var y: Int[2][1];" +
+            "x[0][0]=1;x[1][0]=1;" +
+            "y[0][0]=0;y[1][0]=5;" +
+            "var z:Int[][]=x/y;" +
+            "return z[0][0]", InterpreterException.class);
         check("var x: Int[2][1]; var y: Int[2][1];" +
             "x[0][0]=1;x[1][0]=1;" +
             "y[0][0]=4;y[1][0]=5;" +

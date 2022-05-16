@@ -177,8 +177,13 @@ public final class Interpreter
                             break;
                         case 3:
                             if((double) scalar==0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (double) a[i] / (double) scalar;
+                            break;
+                        case 4:
+                            if((double) scalar==0)
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
+                            result[i] = (double) a[i] % (double) scalar;
                             break;
                         default:
                             result[i] = null;
@@ -207,8 +212,13 @@ public final class Interpreter
                             break;
                         case 3:
                             if ((long) scalar == 0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (long) a[i] / (long) scalar;
+                            break;
+                        case 4:
+                            if ((long) scalar == 0)
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
+                            result[i] = (long) a[i] % (long) scalar;
                             break;
                         default:
                             result[i] = null;
@@ -217,7 +227,7 @@ public final class Interpreter
                 }
                 return result;
             }
-            else if(op==4) {
+            else if(op==5) {
                 Long[] result = new Long[a.length];
                 for (int i = 0; i < a.length; i++)
                     result[i] = -(long) a[i];
@@ -245,10 +255,10 @@ public final class Interpreter
 
     private Object[] arrayOperate(Object lArray,Object rArray, int op){
         if(lArray instanceof Number && rArray instanceof  Object[]){
-            if(op==1){
-                return arrayScalarOperation(arrayScalarOperation((Object[]) rArray,-1,4),(Number) lArray,0);
+            if(op==1) {
+                return arrayScalarOperation(arrayScalarOperation((Object[]) rArray,-1,5),(Number) lArray,0);
             }
-            else if(op==3)
+            else if(op==3||op==4)
                 throw new InterpreterException("Try to divide a scalar by an array", new ArithmeticException());
             else
                 return arrayScalarOperation((Object[]) rArray, (Number) lArray,op);
@@ -279,12 +289,12 @@ public final class Interpreter
                             break;
                         case 3:
                             if((double) rightArray[i]==0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (double) leftArray[i] / (double) rightArray[i];
                             break;
                         case 4:
                             if((double) rightArray[i]==0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (double) leftArray[i] % (double) rightArray[i];
                             break;
                         default:
@@ -314,12 +324,12 @@ public final class Interpreter
                             break;
                         case 3:
                             if ((long) rightArray[i] == 0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (long) leftArray[i] / (long) rightArray[i];
                             break;
                         case 4:
                             if ((long) rightArray[i] == 0)
-                                throw new ArithmeticException("Division by zero");
+                                throw new InterpreterException("Division by zero", new ArithmeticException());
                             result[i] = (long) leftArray[i] % (long) rightArray[i];
                             break;
                         default:
