@@ -238,7 +238,7 @@ public final class SemanticAnalysisTests extends UraniumTestFixture
         failureInputWith("return [[1,3],[2,4],[3,5]]+[[1],[2],[3]]", "Trying to operate on arrays with different dimensions: [3, 2] and [3, 1]");
 
         failureInputWith("return (1 @ [[1],[2]])[0][0]","Trying to dotproduct Int with Int[][]");
-        // TODO make this legal?
+
         successInput("return [].length");
 
         successInput("return [1].length");
@@ -458,8 +458,6 @@ public final class SemanticAnalysisTests extends UraniumTestFixture
     {
         successInput("fun f(): Int { if (true) return 1 else return 2 } ; return f()");
 
-        // TODO: would be nice if this pinpointed the if-statement as missing the return,
-        //   not the whole function declaration
         failureInputWith("fun f(): Int { if (true) return 1 } ; return f()",
             "Missing return in function");
     }

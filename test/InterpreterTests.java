@@ -26,7 +26,6 @@ import static org.testng.Assert.assertThrows;
 
 public final class InterpreterTests extends TestFixture {
 
-    // TODO peeling
 
     // ---------------------------------------------------------------------------------------------
 
@@ -59,9 +58,6 @@ public final class InterpreterTests extends TestFixture {
     // ---------------------------------------------------------------------------------------------
 
     private void check (rule rule, String input, Object expectedReturn, String expectedOutput) {
-        // TODO
-        // (1) write proper parsing tests
-        // (2) write some kind of automated runner, and use it here
 
         autumnFixture.rule = rule;
         ParseResult parseResult = autumnFixture.success(input);
@@ -440,62 +436,27 @@ public final class InterpreterTests extends TestFixture {
 
 
           check(
-
-                    "class Fraction { var num: Int; var den: Int " +
-                " fun to_Number(): Int { return num/den } "+
-                    " fun plus(x:Fraction) : Fraction { " +
-                    "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
-                    "   return y;}} " +
-                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var z: Fraction[] = x+y; " +
-
+              "class Fraction { var num: Int; var den: Int " +
+                  " fun to_Number(): Int { return num/den } "+
+                  " fun minus(x:Fraction) : Fraction { " +
+                  "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                  "   return y;}" +
+                  " fun plus(x:Fraction) : Fraction { " +
+                  "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                  "   return y;}" +
+                  " fun div(x:Fraction) : Fraction { " +
+                  "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                  "   return y;}" +
+                  " fun mul(x:Fraction) : Fraction { " +
+                  "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                  "   return y;}" +
+                  "} " +
+                  " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                  " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                  " var z: Fraction[] = x+y; " +
 
                 "return z[0].num",
             8L);
-        check(
-
-            "class Fraction { var num: Int; var den: Int " +
-                " fun to_Number(): Int { return num/den } "+
-                " fun plus(x:Fraction) : Fraction { " +
-                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
-                "   return y;}} " +
-                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var z: Fraction[] = x+y; " +
-
-
-                "return z[0].den",
-            4L);
-        check(
-
-            "class Fraction { var num: Int; var den: Int " +
-                " fun to_Number(): Int { return num/den } "+
-                " fun plus(x:Fraction) : Fraction { " +
-                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
-                "   return y;}} " +
-                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var z: Fraction[] = x+y; " +
-
-
-                "return z[1].num",
-            4L);
-        check(
-
-            "class Fraction { var num: Int; var den: Int " +
-                " fun to_Number(): Int { return num/den } "+
-                " fun plus(x:Fraction) : Fraction { " +
-                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
-                "   return y;}} " +
-                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
-                " var z: Fraction[] = x+y; " +
-
-
-                "return z[1].den",
-            1L);
-
         check(
 
             "class Fraction { var num: Int; var den: Int " +
@@ -518,8 +479,326 @@ public final class InterpreterTests extends TestFixture {
                 " var z: Fraction[] = x+y; " +
 
 
+                "return z[0].den",
+            4L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x+y; " +
+
+                "return z[1].num",
+            4L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x+y; " +
+
+                "return z[1].den",
+            1L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x-y; " +
+
                 "return z[0].num",
-            8L);
+            0L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x-y; " +
+
+
+                "return z[0].den",
+            4L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x-y; " +
+
+                "return z[1].num",
+            0L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x-y; " +
+
+                "return z[1].den",
+            1L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x*y; " +
+
+                "return z[0].num",
+            4L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x*y; " +
+
+
+                "return z[0].den",
+            4L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x*y; " +
+
+                "return z[1].num",
+            4L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x*y; " +
+
+                "return z[1].den",
+            1L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x/y; " +
+
+                "return z[0].num",
+            4L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x/y; " +
+
+
+                "return z[0].den",
+            4L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x/y; " +
+
+                "return z[1].num",
+            2L);
+        check(
+
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x/y; " +
+
+                "return z[1].den",
+            2L);
 
         check(
 
@@ -646,9 +925,6 @@ public final class InterpreterTests extends TestFixture {
         checkExpr("[1.0][0]", 1d);
         checkExpr("[1, 2][1]", 2L);
 
-        // TODO check that this fails (& maybe improve so that it generates a better message?)
-        // or change to make it legal (introduce a top type, and make it a top type array if thre
-        // is no inference context available)
         checkExpr("[1].length", 1L);
         checkExpr("[1, 2].length", 2L);
         checkExpr("[].sum",0L);
