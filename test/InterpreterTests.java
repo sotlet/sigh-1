@@ -404,6 +404,15 @@ public final class InterpreterTests extends TestFixture {
                 "return x[0].to_Number()",
             1L);
 
+        check("class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } }"+
+                "class InverseFraction { var num2: Int; var den2: Int " +
+                " fun to_Number(): Int { return den2/num2 } }"+
+                " var x: Fraction[] = [$Fraction(5, 2),$Fraction(1, 4)];" +
+                " var y: InverseFraction[] = [$InverseFraction(5, 2),$InverseFraction(1, 1)];" +
+                "return x[0].to_Number()==y[0].to_Number()",
+            false);
+
 
          check(
             "class Fraction { var num: Int; var den: Int " +
