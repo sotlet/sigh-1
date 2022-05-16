@@ -740,27 +740,41 @@ public final class Interpreter
     }
 
     // ---------------------------------------------------------------------------------------------
-    private long average(Object[] tab){
+    private double average(Object[] tab){
         if(tab.length==0) return 0;
-        long a=sum(tab);
+        double a=sumFloat(tab);
         long n=count(tab);
-        return a/n;
+        return a/(double)n;
     }
 
-    private long sum(Object[] tab){
-        if(tab.length==0)return 0;
+    private long sumLong(Object[] tab){
+        if(tab.length==0) return 0;
         long a=0;
         for(Object o:tab){
             if(o instanceof Object[]){
-                a+=sum((Object[])o);
+                a+=sumLong((Object[])o);
             }
-            else a=a+(long)o;
+            if(o instanceof Long) a=a+(long)o;
+        }
+        return a;
+    }
+
+    private double sumFloat(Object[] tab){
+        if(tab.length==0)return 0;
+        double a=0;
+        for(Object o:tab){
+            if(o instanceof Object[]){
+                a+=sumFloat((Object[])o);
+            }
+            else if (o instanceof Long)
+                a=a+(double)((long)o);
+            else if(o instanceof Double)a=a+(double)(o);
         }
         return a;
     }
 
     private long count(Object[] tab){
-        if(tab.length==0)return 0;
+        if(tab.length==0)return new Long(0);
         long n=0;
         if(tab[0] instanceof Object[]){
             for(Object o:tab)
@@ -790,12 +804,17 @@ public final class Interpreter
             String fieldName=node.fieldName;
             if(fieldName.equals("length"))
                 return (long) ((Object[]) stem).length;
-            else if(fieldName.equals("avg"))
-                return (long) average((Object[]) stem);
             else if(fieldName.equals("count"))
                 return (long) count((Object[]) stem);
-            else if(fieldName.equals("sum"))
-                return (long) sum((Object[]) stem);
+            else if(fieldName.equals("avg"))
+                return (Double) average((Object[]) stem);
+            else if(fieldName.equals("sum")) {
+
+                if (((Object[]) stem).length > 0 &&( ((Object[]) stem)[0] instanceof Double || ((Object[]) stem)[0] instanceof Float))
+                    return sumFloat((Object[]) stem);
+                else
+                    return (long) sumLong((Object[]) stem);
+            }
             else if(fieldName.equals("nDim"))
                 return (long) nDim((Object[]) stem,1);
         }

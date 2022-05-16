@@ -270,7 +270,7 @@ public final class InterpreterTests extends TestFixture {
     @Test public void testNullArray(){
         rule=grammar.root;
         check("return [].length", 0L);
-        check("return [].avg", 0L);
+        check("return [].avg", 0D);
         check("return [].count", 0L);
         check("return [].sum", 0L);
         check("return [].nDim", 1L);
@@ -506,18 +506,88 @@ public final class InterpreterTests extends TestFixture {
                 " var z: Fraction[] = x%y; " +
                 "return z[0].num",
             1L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                " fun modulo(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num%x.den,den%x.num);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(3, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x%y; " +
+                "return z.sum",
+            0L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                " fun modulo(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num%x.den,den%x.num);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(3, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x%y; " +
+                "return z.count",
+            2L);
+        check(
+            "class Fraction { var num: Int; var den: Int " +
+                " fun to_Number(): Int { return num/den } "+
+                " fun minus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) - (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun plus(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction((num*x.den) + (den*x.num),den*x.den);" +
+                "   return y;}" +
+                " fun div(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.den,den*x.num);" +
+                "   return y;}" +
+                " fun mul(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num*x.num,den*x.den);" +
+                "   return y;}" +
+                " fun modulo(x:Fraction) : Fraction { " +
+                "   var y: Fraction = $Fraction(num%x.den,den%x.num);" +
+                "   return y;}" +
+                "} " +
+                " var x: Fraction[] = [$Fraction(3, 2),$Fraction(2, 1)];" +
+                " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
+                " var z: Fraction[] = x%y; " +
+                "return z.avg",
+            0D);
          checkThrows(
-
                     "class Fraction { var num: Int; var den: Int " +
                 " fun to_Number(): Int { return num/den } "+
                     "} " +
                 " var x: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
                 " var y: Fraction[] = [$Fraction(2, 2),$Fraction(2, 1)];" +
                 " var z: Fraction[] = x+y; " +
-
-
                 "return z[0].num",
              InterpreterException.class);
+
         checkThrows(
             "var num : Int = 12;" +
                 "class Fraction { var num: Int; var den: Int " +
@@ -540,23 +610,23 @@ public final class InterpreterTests extends TestFixture {
         checkExpr("[1].length", 1L);
         checkExpr("[1, 2].length", 2L);
         checkExpr("[].sum",0L);
-        checkExpr("[].avg",0L);
+        checkExpr("[].avg",0D);
         checkExpr("[].count",0L);
         checkExpr("[].nDim",1L);
         checkExpr("[[]].nDim",2L);
-        checkExpr("[4, 2].avg", 3L);
+        checkExpr("[4, 2].avg", 3D);
         checkExpr("[1, 3, 4, 2].count", 4L);
         checkExpr("[4, 2].sum", 6L);
         checkExpr("[4, 2].nDim", 1L);
         checkExpr("[1, 3, 4, 2].nDim",1L);
         checkExpr("[[4, 2],[1,3]].nDim", 2L);
         checkExpr("[[4, 2],[1,3]].sum", 10L);
-        checkExpr("[[4, 2],[1,3]].avg", 2L);
+        checkExpr("[[4, 2],[1,3]].avg", 2.5D);
         checkExpr("[[4, 2],[1,3]].count", 4L);
         checkExpr("[[4, 2],[3]].count", 3L);
         checkExpr("[[[4, 2],[1,3]],[[1,1],[2,2]]].nDim", 3L);
         checkExpr("[[[4, 2],[1,3]],[[1,1],[2,2]]].sum", 16L);
-        checkExpr("[[[4, 2],[1,3]],[[1,1],[2,2]]].avg", 2L);
+        checkExpr("[[[4, 2],[1,3]],[[1,1],[2,2]]].avg", 2D);
         checkExpr("[[[4, 2],[1,3]],[[1,1],[2,2]]].count", 8L);
         checkExpr("[[[4, 2],[1,3]],[[1,1]]].count", 6L);
 
@@ -613,11 +683,7 @@ public final class InterpreterTests extends TestFixture {
 
     @Test public void dummyTest(){
         rule = grammar.root;
-        check("var x: Int [3][4]"+
-            "x[0][0] = 30;x[1][1] = 21;x[2][2] = 78;x[2][3] = 45;"+
-            "var y: Int [][] = [[1,2,3,4,5],[5,4,3,2,1],[5,10,15,20,25],[1,3,5,7,11]]"+
-            "var z: Int [][] = x @ y "+
-            "return z[0][0]",30L);
+
     }
 
     @Test public void testArrayDeclaration(){
@@ -782,11 +848,17 @@ public final class InterpreterTests extends TestFixture {
             "var z:Int[][]=x@y;" +
             "return z[1][0]", 8L);
 
+        check("var x: Int [3][4]"+
+            "x[0][0] = 30;x[1][1] = 21;x[2][2] = 78;x[2][3] = 45;"+
+            "var y: Int [][] = [[1,2,3,4,5],[5,4,3,2,1],[5,10,15,20,25],[1,3,5,7,11]]"+
+            "var z: Int [][] = x @ y "+
+            "return z[0][0]",30L);
+
         check("var x: Int[2]; x[0]=2;x[1]=4;" +
             "return x.sum", 6L);
 
         check("var x: Int[2]; x[0]=2;x[1]=4;" +
-            "return x.avg", 3L);
+            "return x.avg", 3.0D);
 
         check("var x: Int[2]; x[0]=2;x[1]=4;" +
             "return x.count", 2L);
@@ -795,10 +867,35 @@ public final class InterpreterTests extends TestFixture {
             "return x.sum", 6L);
 
         check("var x: Int[]=[2,4]" +
-            "return x.avg", 3L);
+            "return x.avg", 3.0D);
 
         check("var x: Int[]=[2,4]" +
             "return x.count", 2L);
+
+        check("var x: Float[2]; x[0]=2.5;x[1]=4.3;" +
+            "return x.sum", 6.8D);
+
+        check("var x: Float[2]; x[0]=2.5;x[1]=4.3;" +
+            "return x.avg", 3.4D);
+
+        check("var x: Float[2]; x[0]=2.5;x[1]=4.3;" +
+            "return x.count", 2L);
+
+        check("var x: Float[]=[2.5,4.3]" +
+            "return x.sum", 6.8D);
+
+        check("var x: Float[]=[2.5,4.3]" +
+            "return x.avg", 3.4D);
+
+        check("var x: Float[]=[2.5,4.3]" +
+            "return x.count", 2L);
+
+        check("var x: String[3]" +
+            "return x.count", 3L);
+        check("var x: String[3]" +
+            "return x.sum", 0L);
+        check("var x: String[3]" +
+            "return x.avg", 0D);
 
     }
 
